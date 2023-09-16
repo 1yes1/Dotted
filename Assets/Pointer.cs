@@ -1,4 +1,3 @@
-using Dotted.Assets.Scripts.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +10,7 @@ namespace Dotted
         [SerializeField] private float _moveTime = 0.5f;
         [SerializeField] private Color _moveColor;
 
+        private Controller _controller;
         private Queue<Transform> _targetCircleTransforms;
         private Action<Transform,bool> _onPointerReachedTargetAction;
 
@@ -24,6 +24,8 @@ namespace Dotted
         private bool _canGoTarget = false;
 
         private const string CircleChoosedAnimation = "PointerCircleChoosed";
+
+        public int QueueCount => _targetCircleTransforms.Count;
 
         private void OnEnable()
         {
@@ -47,16 +49,10 @@ namespace Dotted
             Hide();
         }
 
-        public Vector3 GetPosition()
+        public void Initialize(Controller controller)
         {
-            return transform.position;
+            _controller = controller;
         }
-
-        public GameObject GetGameObject()
-        {
-            return gameObject;
-        }
-
 
         public void OnCircleChoosed(Vector3 startPosition, Transform targetCircleTransform,Action<Transform,bool> OnPointerReachedTargetAction,bool isFirst)
         {
@@ -90,12 +86,6 @@ namespace Dotted
         }
 
 
-        private void OnChooseAnimationEnded()
-        {
-            //gameObject.SetActive(false);
-            //_isAnimationPlaying = false;
-        }
-
         private void Hide()
         {
             _spriteRenderer.enabled = false;
@@ -108,6 +98,8 @@ namespace Dotted
 
         private void OnPointerReachedTarget(Transform circle)
         {
+            transform.position = circle.position;
+
             _canGoTarget = false;
 
             _animation.Play(CircleChoosedAnimation);
@@ -137,10 +129,20 @@ namespace Dotted
             SetColor(_moveColor);
             _timer = 0;
 
+            //Sýraya almýþ bu circle ý fakat bundan önceki circle zinciri tamamlamýþ
+            //O yüzden bunun ilk halka olduðunu varsayýyoruz
+            if (_controller.HoldingDotCount <= 0)
+            {
+                print("Iþýnlan");
+                OnPointerReachedTarget(_targetTransform);
+                return;
+            }
+
             if (_targetTransform != null && !isFirst)
                 _canGoTarget = true;
             else
                 return;
+
 
             StopAnimation();
         }

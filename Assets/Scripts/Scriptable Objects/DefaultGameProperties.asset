@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c45ba70f3bde30c46bff1803be0760a7, type: 3}
   m_Name: DefaultGameProperties
   m_EditorClassIdentifier: 
-  _startCircleCount: 5
-  _maxCircleCount: 20
+  _startCircleCount: 15
+  _maxCircleCount: 40
   _circleCreatingFrequencyAtStart: 0.2
-  _circleCreatingFrequency: 1
-  _moveSpeed: 0
+  _circleCreatingFrequency: 0.6
+  _moveSpeed: 0.15
   _waitTime: 0.35

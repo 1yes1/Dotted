@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dotted.Assets.Scripts.Interfaces
+namespace Dotted
 {
     public class GameEventCaller : IGameEvents
     {

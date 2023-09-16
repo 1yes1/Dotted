@@ -1,4 +1,3 @@
-using Dotted.Assets.Scripts.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,12 +13,17 @@ namespace Dotted
         private bool _canMove = false;
         private Vector3 _startPosition;
         private Vector3 _targetPosition;
-        private bool _isAddedToChain = false;
-        private bool _isFirstCircle = false;
         private bool _isPointerComing = false;
+        private bool _isSelectable = true;
 
         private const string SpawnAnimation = "CircleSpawnAnimation";
         
+        public bool IsSelectable
+        {
+            get { return _isSelectable; }
+            set { _isSelectable = value; }
+        }
+
         private void Awake()
         {
             _animation = GetComponent<Animation>();
@@ -29,6 +33,7 @@ namespace Dotted
         {
             _circleController = circleController;
             _animation.Play(SpawnAnimation);
+            _isSelectable = true;
         }
 
         private void OnSpawnAnimationCompleted()
@@ -77,30 +82,33 @@ namespace Dotted
 
         private void OnMouseEnter()
         {
-            if (!GameManager.Instance.IsLevelFailed)
-                CheckSelect();
+            if (!GameManager.Instance.IsLevelFailed && InputManager.IsSwiping)
+                TrySelect();
         }
 
         private void OnMouseDown()
         {
             if (!GameManager.Instance.IsLevelFailed)
-                CheckSelect();
+                TrySelect();
         }
 
-        private void CheckSelect()
+        private void TrySelect()
         {
-            if (!InputManager.IsSwiping || _isPointerComing)
+            if (_isPointerComing && !_isSelectable)
                 return;
 
-            _isAddedToChain = true;
+            GameEventCaller.Instance.OnCircleSelected(this);
+        }
+
+        public void CircleSelected()
+        {
+            _isSelectable = false;
             _isPointerComing = true;
-
-            _circleController.OnCircleSelected(this);
-
         }
 
         public void OnPointerReached()
         {
+            //print("Pointer Reached");
             _isPointerComing = false;
         }
     }

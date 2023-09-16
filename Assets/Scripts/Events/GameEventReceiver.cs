@@ -1,5 +1,4 @@
-﻿using Dotted.Assets.Scripts.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +10,7 @@ namespace Dotted
     {
         public static event Action<List<Dot>> OnChainCompletedEvent;
         public static event Action OnLevelFailedEvent;
-        public static event Action OnCircleSelectedEvent;
+        public static event Action<Circle> OnCircleSelectedEvent;
 
         public void OnChainCompleted(List<Dot> circles)
         {
@@ -20,7 +19,7 @@ namespace Dotted
 
         public void OnCircleSelected(Circle circle)
         {
-            OnCircleSelectedEvent.Invoke();
+            OnCircleSelectedEvent.Invoke(circle);
         }
 
         public void OnLevelFailed()

@@ -1,4 +1,3 @@
-using Dotted.Assets.Scripts.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +8,6 @@ namespace Dotted
 {
     public class CircleController : MonoBehaviour
     {
-        public static event Action<Circle> OnCircleSelectedEvent;
-
         [SerializeField]
         private Circle _circlePrefab;
 
@@ -78,6 +75,7 @@ namespace Dotted
         private void CreateCircle()
         {
             Circle circle = Instantiate(_circlePrefab, transform);
+            circle.name = "Circle (" + _circles.Count + ")";
             circle.transform.position = GetRandomPosition();
             circle.Initialize(this);
             _circles.Add(circle);
@@ -97,13 +95,6 @@ namespace Dotted
             pos.y = Random.Range(_padding.x + minY, maxY- _padding.y);
             return pos;
         }
-
-
-        public void OnCircleSelected(Circle circle)
-        {
-            OnCircleSelectedEvent?.Invoke(circle);
-        }
-
 
         private void OnLevelFailed()
         {
