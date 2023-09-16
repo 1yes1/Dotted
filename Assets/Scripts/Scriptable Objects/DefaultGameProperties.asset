@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startCircleCount: 5
   _maxCircleCount: 20
-  _circleCreatingFrequencyAtStart: 0.4
-  _circleCreatingFrequency: 2
-  _moveSpeed: 0.25
-  _waitTime: 0.5
+  _circleCreatingFrequencyAtStart: 0.2
+  _circleCreatingFrequency: 1
+  _moveSpeed: 0
+  _waitTime: 0.35

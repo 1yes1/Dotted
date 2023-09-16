@@ -1,3 +1,4 @@
+using Dotted.Assets.Scripts.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace Dotted
 {
     public class CircleController : MonoBehaviour
     {
-        public static event Action<Circle> OnCircleDownEvent;
+        public static event Action<Circle> OnCircleSelectedEvent;
 
         [SerializeField]
         private Circle _circlePrefab;
@@ -19,6 +20,23 @@ namespace Dotted
         private List<Circle> _circles;
 
         private float _timer;
+
+        private void OnEnable()
+        {
+            GameEventReceiver.OnChainCompletedEvent += OnChainCompleted;
+            GameEventReceiver.OnLevelFailedEvent += OnLevelFailed;
+        }
+
+        private void OnDisable()
+        {
+            GameEventReceiver.OnChainCompletedEvent -= OnChainCompleted;
+            GameEventReceiver.OnLevelFailedEvent -= OnLevelFailed;
+        }
+
+        private void OnChainCompleted(List<Dot> obj)
+        {
+            _circles.RemoveAll(a => obj.Contains(a));
+        }
 
         void Awake()
         {
@@ -33,7 +51,7 @@ namespace Dotted
 
         void Update()
         {
-            if (GameManager.Instance.IsGameRunning)
+            if (!GameManager.Instance.IsLevelFailed)
                 CheckCreating();
         }
 
@@ -81,10 +99,17 @@ namespace Dotted
         }
 
 
-        public void OnCircleDown(Circle circle)
+        public void OnCircleSelected(Circle circle)
         {
-            OnCircleDownEvent?.Invoke(circle);
+            OnCircleSelectedEvent?.Invoke(circle);
         }
+
+
+        private void OnLevelFailed()
+        {
+            
+        }
+
 
     }
 }

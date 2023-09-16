@@ -12,6 +12,8 @@ namespace Dotted
 
         public static Vector3 TouchPosition => Input.mousePosition;
 
+        public static bool IsSwiping => Input.GetMouseButton(0); 
+
     }
 }
 

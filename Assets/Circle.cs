@@ -1,10 +1,12 @@
+using Dotted.Assets.Scripts.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Dotted
 {
-    public class Circle : MonoBehaviour
+    public class Circle : Dot
     {
         private CircleController _circleController;
         private Animation _animation;
@@ -12,11 +14,11 @@ namespace Dotted
         private bool _canMove = false;
         private Vector3 _startPosition;
         private Vector3 _targetPosition;
-        private float _count;
-        private float _time;
+        private bool _isAddedToChain = false;
+        private bool _isFirstCircle = false;
+        private bool _isPointerComing = false;
 
         private const string SpawnAnimation = "CircleSpawnAnimation";
-        private const string SelectedAnimation = "CircleSelectedAnimation";
         
         private void Awake()
         {
@@ -39,9 +41,19 @@ namespace Dotted
             
         }
 
+        public Vector3 GetPosition()
+        {
+            return transform.position;
+        }
+
+        public GameObject GetGameObject()
+        {
+            return gameObject;
+        }
+
         private void Update()
         {
-            if(GameManager.Instance.IsGameRunning && _canMove)
+            if(!GameManager.Instance.IsLevelFailed && _canMove)
             {
                 transform.position = Vector2.MoveTowards(transform.position, _targetPosition, Time.deltaTime * GameManager.DefaultGameProperties.MoveSpeed);
 
@@ -54,7 +66,6 @@ namespace Dotted
         {
             _startPosition = transform.position;
             _targetPosition = _circleController.GetRandomPosition();
-            _time = 0;
             _canMove = true;
         }
 
@@ -64,12 +75,33 @@ namespace Dotted
             Invoke(nameof(SetTarget), GameManager.DefaultGameProperties.WaitTime);
         }
 
-        private void OnMouseDown()
+        private void OnMouseEnter()
         {
-            print("Down");
-            _animation.Play(SelectedAnimation);
-            _circleController.OnCircleDown(this);
+            if (!GameManager.Instance.IsLevelFailed)
+                CheckSelect();
         }
 
+        private void OnMouseDown()
+        {
+            if (!GameManager.Instance.IsLevelFailed)
+                CheckSelect();
+        }
+
+        private void CheckSelect()
+        {
+            if (!InputManager.IsSwiping || _isPointerComing)
+                return;
+
+            _isAddedToChain = true;
+            _isPointerComing = true;
+
+            _circleController.OnCircleSelected(this);
+
+        }
+
+        public void OnPointerReached()
+        {
+            _isPointerComing = false;
+        }
     }
 }
