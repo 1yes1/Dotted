@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Dotted
 {
@@ -28,14 +29,49 @@ namespace Dotted
             _gameEventReceiver.OnChainCompleted(circles);
         }
 
-        public void OnLevelFailed()
+        public void OnFailed()
         {
-            _gameEventReceiver.OnLevelFailed();
+            _gameEventReceiver.OnFailed();
         }
 
         public void OnCircleSelected(Circle circle)
         {
             _gameEventReceiver.OnCircleSelected(circle);
+        }
+
+        public void OnScoreChanged(int score)
+        {
+            _gameEventReceiver.OnScoreChanged(score);
+        }
+
+        public void OnCircleMoveSpeedChanged(float newSpeed)
+        {
+            _gameEventReceiver.OnCircleMoveSpeedChanged(newSpeed);
+        }
+
+        public void OnMaxCircleCountChanged(int newCircleCount)
+        {
+            _gameEventReceiver.OnMaxCircleCountChanged(newCircleCount);
+        }
+
+        public void OnMaxTravelTimeChanged(float maxTravelTime)
+        {
+            _gameEventReceiver.OnMaxTravelTimeChanged(maxTravelTime);
+        }
+
+        public void OnPlayAnimationFinished()
+        {
+            _gameEventReceiver.OnPlayAnimationFinished();
+        }
+
+        public void OnFailed(Vector3 intersectionPoint)
+        {
+            _gameEventReceiver.OnFailed(intersectionPoint);
+        }
+
+        public void OnFailed(int score)
+        {
+            _gameEventReceiver.OnFailed(score);
         }
     }
 }

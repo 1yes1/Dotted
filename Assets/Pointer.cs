@@ -19,7 +19,6 @@ namespace Dotted
         private float _timer;
         private Vector3 _startPosition;
         private Transform _targetTransform;
-        private Animation _animation;
         private bool _isAnimationPlaying = false;
         private bool _canGoTarget = false;
 
@@ -30,16 +29,20 @@ namespace Dotted
         private void OnEnable()
         {
             GameEventReceiver.OnChainCompletedEvent += OnChainCompleted;
+            GameEventReceiver.OnFailedEvent += OnFailed;
         }
+
 
         private void OnDisable()
         {
             GameEventReceiver.OnChainCompletedEvent -= OnChainCompleted;
+            GameEventReceiver.OnFailedEvent -= OnFailed;
         }
 
         private void Awake()
         {
-            _animation = GetComponent<Animation>();
+            base.Awake();
+
             _targetCircleTransforms = new Queue<Transform>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
         }
@@ -70,15 +73,20 @@ namespace Dotted
                 OnPointerReachedTarget(targetCircleTransform);
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if(_isAnimationPlaying)
-                transform.position = _targetTransform.position;
+            {
+                if(_targetTransform == null)
+                    Hide();
+                else
+                    transform.position = _targetTransform.position;
+            }
 
-            if(_canGoTarget)
+            if (_canGoTarget)
             {
                 transform.position = Vector3.Lerp(_startPosition, _targetTransform.position, _timer / _moveTime);
-                _timer += Time.deltaTime;
+                _timer += Time.fixedDeltaTime;
 
                 if (Vector3.Distance(transform.position, _targetTransform.position) <= 0.01f)
                     OnPointerReachedTarget(_targetTransform);
@@ -89,11 +97,17 @@ namespace Dotted
         private void Hide()
         {
             _spriteRenderer.enabled = false;
+            _isAnimationPlaying = false;
         }
 
         private void Show()
         {
             _spriteRenderer.enabled = true;
+        }
+
+        private void StopMoving()
+        {
+            _canGoTarget = false;
         }
 
         private void OnPointerReachedTarget(Transform circle)
@@ -114,6 +128,13 @@ namespace Dotted
 
         private void TryToMove()
         {
+            if(GameManager.Instance.IsLevelFailed)
+            {
+                _targetCircleTransforms.Clear();
+                StopMoving();
+                StopAnimation();
+            }
+
             if (_targetCircleTransforms.Count > 0)
                 StartMovingTarget();
         }
@@ -180,6 +201,12 @@ namespace Dotted
             Hide();
             _canGoTarget = false;
             _targetTransform = transform;
+            StopAnimation();
+            print("Chain Tamam");
+        }
+
+        private void OnFailed()
+        {
             StopAnimation();
         }
 

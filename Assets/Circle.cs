@@ -8,13 +8,15 @@ namespace Dotted
     public class Circle : Dot
     {
         private CircleController _circleController;
-        private Animation _animation;
+        private SpriteRenderer _spriteRenderer;
 
         private bool _canMove = false;
         private Vector3 _startPosition;
         private Vector3 _targetPosition;
-        private bool _isPointerComing = false;
         private bool _isSelectable = true;
+        private float _moveSpeed = 0;
+        private float _maxTravelTime = 0;
+        private float _travelTimer = 0;
 
         private const string SpawnAnimation = "CircleSpawnAnimation";
         
@@ -26,14 +28,16 @@ namespace Dotted
 
         private void Awake()
         {
-            _animation = GetComponent<Animation>();
+            base.Awake();
         }
 
-        public void Initialize(CircleController circleController)
+        public void Initialize(CircleController circleController,float moveSpeed,float maxTravelTime)
         {
             _circleController = circleController;
             _animation.Play(SpawnAnimation);
             _isSelectable = true;
+            SetMoveSpeed(moveSpeed);
+            SetMaxTravelTime(maxTravelTime);
         }
 
         private void OnSpawnAnimationCompleted()
@@ -43,26 +47,22 @@ namespace Dotted
 
         private void Start()
         {
-            
+            _spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        public Vector3 GetPosition()
+        public void SetMoveSpeed(float newSpeed)
         {
-            return transform.position;
-        }
-
-        public GameObject GetGameObject()
-        {
-            return gameObject;
+            _moveSpeed = newSpeed;
         }
 
         private void Update()
         {
             if(!GameManager.Instance.IsLevelFailed && _canMove)
             {
-                transform.position = Vector2.MoveTowards(transform.position, _targetPosition, Time.deltaTime * GameManager.DefaultGameProperties.MoveSpeed);
+                transform.position = Vector2.MoveTowards(transform.position, _targetPosition, Time.deltaTime * _moveSpeed);
+                _travelTimer += Time.deltaTime;
 
-                if (Vector3.Distance(transform.position,_targetPosition) <= 0.05f)
+                if (Vector3.Distance(transform.position,_targetPosition) <= 0.05f || _travelTimer >= _maxTravelTime)
                     OnTargetReached();
             }
         }
@@ -76,6 +76,7 @@ namespace Dotted
 
         private void OnTargetReached()
         {
+            _travelTimer = 0;
             _canMove = false;
             Invoke(nameof(SetTarget), GameManager.DefaultGameProperties.WaitTime);
         }
@@ -94,7 +95,7 @@ namespace Dotted
 
         private void TrySelect()
         {
-            if (_isPointerComing && !_isSelectable)
+            if (!_isSelectable)
                 return;
 
             GameEventCaller.Instance.OnCircleSelected(this);
@@ -103,13 +104,25 @@ namespace Dotted
         public void CircleSelected()
         {
             _isSelectable = false;
-            _isPointerComing = true;
+        }
+
+        public void SetMaxTravelTime(float travelTime)
+        {
+            //Random olsunlar
+            _maxTravelTime = UnityEngine.Random.Range(travelTime - 1, travelTime + 1);
         }
 
         public void OnPointerReached()
         {
             //print("Pointer Reached");
-            _isPointerComing = false;
+        }
+
+        public void MakeShatter()
+        {
+            ParticleSystem particleSystem = ParticleManager.Instance.CreateAndPlay(ParticleManager.Instance.circleShatter, null, transform.position, false);
+            particleSystem.name = name;
+            Destroy(gameObject);
+            //_spriteRenderer.enabled = false;
         }
     }
 }

@@ -9,7 +9,14 @@ namespace Dotted
 {
     public abstract class UIView : MonoBehaviour
     {
-        public bool isPopup;
+        [SerializeField] private bool _isPopup;
+
+        public bool IsPopup => _isPopup;
+
+        public void SetPopup()
+        {
+            _isPopup = true;
+        }
 
         public abstract void Initialize();
 

@@ -19,6 +19,25 @@ namespace Dotted
 
         private readonly Stack<UIView> _history = new Stack<UIView>();
 
+        private void OnEnable()
+        {
+            GameEventReceiver.OnFailedScoreEvent += OnFailed;
+        }
+
+        private void OnDisable()
+        {
+            GameEventReceiver.OnFailedScoreEvent -= OnFailed;
+        }
+
+        private void OnFailed(int score)
+        {
+            FailedMenuView failedMenuView = GetView<FailedMenuView>();
+            failedMenuView.SetScore(score);
+            failedMenuView.Show();
+            GetView<PauseMenuView>().Hide();
+            GetView<ScoreMenuView>().Hide();
+        }
+
         private void Awake()
         {
             if (_instance == null) _instance = this;
@@ -26,7 +45,7 @@ namespace Dotted
             for (int i = 0; i < _views.Length; i++)
             {
                 _views[i].Initialize();
-                if (!_views[i].isPopup)
+                if (!_views[i].IsPopup)
                     _views[i].Hide();
                 else
                     _views[i].Show();

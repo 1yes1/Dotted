@@ -9,6 +9,11 @@ namespace Dotted
 {
     public class Dot:MonoBehaviour
     {
+        protected Animation _animation;
 
+        protected void Awake()
+        {
+            _animation = GetComponent<Animation>();
+        }
     }
 }

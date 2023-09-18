@@ -50,7 +50,6 @@ namespace Dotted
         void LateUpdate()
         {
             SetPositions();
-
         }
 
         private void Update()
@@ -93,7 +92,7 @@ namespace Dotted
                         print("Line4Index: " + (startIndex + j + 1));
                         _intersectionPoint.transform.position = intersectionPoint;
                         _intersectionPoint.enabled = true;
-                        GameManager.Instance.LevelFailed();
+                        GameManager.Instance.LevelFailed(intersectionPoint);
                     }
                 }
             }
@@ -160,14 +159,16 @@ namespace Dotted
         private void ChainCompleted()
         {
             GameEventCaller.Instance.OnChainCompleted(_holdingDots);
-
+            print("Tamam iþteee");
             if (GameManager.Instance.IsLevelFailed)
                 return;
 
-            for (int i = 0; i < _holdingDots.Count; i++)
+            for (int i = 0; i < _holdingDots.Count - 1; i++)
             {
                 if (_holdingDots[i] != _pointer)
-                    Destroy(_holdingDots[i].gameObject);
+                {
+                    _holdingDots[i].GetComponent<Circle>().MakeShatter();
+                }
             }
 
             _holdingDots.Clear();

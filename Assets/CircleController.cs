@@ -18,16 +18,28 @@ namespace Dotted
 
         private float _timer;
 
+        private float _moveSpeed;
+
+        private float _maxCircleCount;
+
+        private float _maxTravelTime;
+
         private void OnEnable()
         {
             GameEventReceiver.OnChainCompletedEvent += OnChainCompleted;
-            GameEventReceiver.OnLevelFailedEvent += OnLevelFailed;
+            GameEventReceiver.OnFailedEvent += OnFailed;
+            GameEventReceiver.OnCircleMoveSpeedChangedEvent += OnCircleMoveSpeedChanged;
+            GameEventReceiver.OnMaxCircleCountChangedEvent += OnMaxCircleCountChanged;
+            GameEventReceiver.OnMaxTravelTimeChangedEvent += OnMaxTravelTimeChanged;
         }
+
 
         private void OnDisable()
         {
             GameEventReceiver.OnChainCompletedEvent -= OnChainCompleted;
-            GameEventReceiver.OnLevelFailedEvent -= OnLevelFailed;
+            GameEventReceiver.OnFailedEvent -= OnFailed;
+            GameEventReceiver.OnCircleMoveSpeedChangedEvent -= OnCircleMoveSpeedChanged;
+            GameEventReceiver.OnMaxCircleCountChangedEvent -= OnMaxCircleCountChanged;
         }
 
         private void OnChainCompleted(List<Dot> obj)
@@ -42,6 +54,10 @@ namespace Dotted
 
         private void Start()
         {
+            _maxCircleCount = GameManager.DefaultGameProperties.MaxCircleCount;
+            _maxTravelTime = GameManager.DefaultGameProperties.MaxTravelTime;
+            _moveSpeed = GameManager.DefaultGameProperties.MoveSpeed;
+
             StartCoroutine(nameof(InitializeCircles));
             _timer = GameManager.DefaultGameProperties.CircleCreatingFrequency;
         }
@@ -56,7 +72,7 @@ namespace Dotted
         private void CheckCreating()
         {
             _timer -= Time.deltaTime;
-            if(_circles.Count < GameManager.DefaultGameProperties.MaxCircleCount && _timer <= 0)
+            if(_circles.Count < _maxCircleCount && _timer <= 0)
             {
                 CreateCircle();
                 _timer = GameManager.DefaultGameProperties.CircleCreatingFrequency;
@@ -77,7 +93,7 @@ namespace Dotted
             Circle circle = Instantiate(_circlePrefab, transform);
             circle.name = "Circle (" + _circles.Count + ")";
             circle.transform.position = GetRandomPosition();
-            circle.Initialize(this);
+            circle.Initialize(this, _moveSpeed,_maxTravelTime);
             _circles.Add(circle);
         }
 
@@ -96,11 +112,33 @@ namespace Dotted
             return pos;
         }
 
-        private void OnLevelFailed()
+        private void OnFailed()
         {
             
         }
 
+        private void OnCircleMoveSpeedChanged(float newSpeed)
+        {
+            for (int i = 0; i < _circles.Count; i++)
+            {
+                _circles[i].SetMoveSpeed(newSpeed);
+            }
+            _moveSpeed = newSpeed;
+        }
+
+        private void OnMaxCircleCountChanged(int newCircleCount)
+        {
+            _maxCircleCount = newCircleCount;
+        }
+
+        private void OnMaxTravelTimeChanged(float time)
+        {
+            for (int i = 0; i < _circles.Count; i++)
+            {
+                _circles[i].SetMaxTravelTime(time);
+            }
+            _maxTravelTime = time;
+        }
 
     }
 }
