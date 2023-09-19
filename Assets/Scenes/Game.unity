@@ -397,6 +397,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 309359751672664420, guid: d36f808c698b1564cbbb0eedb73efe93, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 218.8
+      objectReference: {fileID: 0}
     - target: {fileID: 3655377790511790170, guid: d36f808c698b1564cbbb0eedb73efe93, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -738,13 +742,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0fb8048d637dc64a8b8cb64190b09ab, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ec83fd435a6ec542b45e903734dd0bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _focusOffset: {x: 0, y: -1, z: 0}
   _focusTime: 0.75
-  _intersectionPoint: {x: 0, y: 0, z: 0}
-  _startPoint: {x: 0, y: 0, z: 0}
 --- !u!1 &740627429
 GameObject:
   m_ObjectHideFlags: 0
@@ -1161,7 +1163,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -1
+  m_SortingOrder: -5
   m_Positions: []
   m_Parameters:
     serializedVersion: 3
@@ -1574,3 +1576,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveTime: 0.15
   _moveColor: {r: 1, g: 0, b: 0.25882354, a: 0.78431374}
+  _moveScale: {x: 0.3, y: 0.3, z: 0.3}

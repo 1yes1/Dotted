@@ -24,7 +24,7 @@ namespace Dotted
 
         private int _tapCount = 0;
         private float _tapTimer = 0;
-        public bool CanIntersect => _noIntersectionTime < 0;
+        public bool CanIntersect => _noIntersectionTime <= 0;
 
         public static TestTools Instance => _instance;
 

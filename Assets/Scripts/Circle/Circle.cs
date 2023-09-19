@@ -8,6 +8,8 @@ namespace Dotted
 {
     public class Circle : Dot
     {
+        public float testTime;
+
         private CircleController _circleController;
 
         private SpriteRenderer _spriteRenderer;
@@ -80,6 +82,7 @@ namespace Dotted
                 if (Vector3.Distance(transform.position,_targetPosition) <= 0.05f || _travelTimer >= _maxTravelTime)
                     OnTargetReached();
             }
+            testTime += Time.deltaTime;
         }
 
         private void SetTarget()

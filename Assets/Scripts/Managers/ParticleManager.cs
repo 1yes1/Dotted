@@ -30,7 +30,7 @@ public class ParticleManager : MonoBehaviour
     private void Start()
     {
         _circleShatterPool = PoolManager.CreateObjectPool<ParticleSystem>(circleShatter);
-        _circleShatterPool.CreateObjects(20);
+        _circleShatterPool.CreateObjects(8);
     }
 
     //Zaten sahnede olanı oynatıyoruz

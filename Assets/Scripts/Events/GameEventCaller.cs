@@ -39,9 +39,9 @@ namespace Dotted
             _gameEventReceiver.OnCircleSelected(circle);
         }
 
-        public void OnScoreChanged(int score, Vector3? lastCirclePosition = null)
+        public void OnScoreChanged(int score, Vector3? lastCirclePosition = null,float multipliers =0)
         {
-            _gameEventReceiver.OnScoreChanged(score, lastCirclePosition);
+            _gameEventReceiver.OnScoreChanged(score, lastCirclePosition, multipliers);
         }
 
         public void OnCircleMoveSpeedChanged(float newSpeed)

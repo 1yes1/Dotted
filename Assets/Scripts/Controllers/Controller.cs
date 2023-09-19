@@ -49,11 +49,12 @@ namespace Dotted
             //if (GameManager.Instance.IsGameFailed || !GameManager.Instance.IsGameStarted)
             //    return;
             
-            SetPositions();
         }
 
         private void Update()
         {
+            SetPositions();
+
             if (GameManager.Instance.IsGameFailed || !GameManager.Instance.IsGameStarted || !GameManager.Instance.IsGamePlaying)
                 return;
 
@@ -67,15 +68,10 @@ namespace Dotted
             }
             else if(!_touchPoint.IsHiding)
                 _touchPoint.Hide();
-        }
 
-        private void FixedUpdate()
-        {
-            if (GameManager.Instance.IsGameFailed || !GameManager.Instance.IsGameStarted)
-                return;
-
-            if(TestTools.Instance.CanIntersect)
+            if (TestTools.Instance.CanIntersect)
                 CheckIntersections();
+
         }
 
         private void CheckIntersections()
@@ -145,6 +141,7 @@ namespace Dotted
         {
             _intersectionPoint.transform.position = intersectionPoint;
             _intersectionPoint.enabled = true;
+            _touchPoint.Hide();
             GameManager.Instance.LevelFailed(intersectionPoint);
         }
 
@@ -160,6 +157,8 @@ namespace Dotted
             //Ýlki olduðu için bir süre seçilemez
             if (_holdingDots.Count == 0)
                 circle.IsSelectable = false;
+
+            _pointer.transform.position = lastCirclePosition;
 
             if (_holdingDots.Count == 0 || _holdingDots[_holdingDots.Count - 1] != _pointer)
                 AddDot(_pointer);
@@ -204,6 +203,9 @@ namespace Dotted
         {
             if (GameManager.Instance.IsGameFailed)
                 return;
+
+            _touchPoint.Hide();
+
             GameEventCaller.Instance.BeforeOnChainCompleted(_holdingDots);
 
             GameEventCaller.Instance.OnChainCompleted(_holdingDots);
@@ -226,6 +228,7 @@ namespace Dotted
 
         private void OnGameRestarted()
         {
+            _touchPoint.Hide();
             _holdingDots.Clear();
             _lineRenderer.positionCount = 0;
             _intersectionPoint.enabled = false;

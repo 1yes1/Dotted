@@ -11,9 +11,11 @@ namespace Dotted
 
         [SerializeField] private TextMeshProUGUI _scoreText;
 
-        [SerializeField] private TextMeshProUGUI _scoreDynamicText;
+        [SerializeField] private DynamicScoreText _dynamicScoreTextPrefab;
 
         [SerializeField] private Vector3 _dynamicScoreOffset;
+
+        private ObjectPool<DynamicScoreText> _dynamicTextPool;
 
         private void OnEnable()
         {
@@ -28,13 +30,14 @@ namespace Dotted
         public override void Initialize()
         {
             _scoreText.text = "0";
+            _dynamicTextPool = PoolManager.CreateObjectPool<DynamicScoreText>(_dynamicScoreTextPrefab);
         }
 
-        private void OnScoreChanged(int score,Vector3? lastCirclePosition)
+        private void OnScoreChanged(int score,Vector3? lastCirclePosition, float multipliers)
         {
             int oldScore = int.Parse(_scoreText.text);
             int addedScore = score - oldScore;
-            PlayAddedScoreAnimation(addedScore,lastCirclePosition);
+            PlayAddedScoreAnimation(addedScore,lastCirclePosition, multipliers);
 
             UpdateScore(score);
         }
@@ -44,15 +47,48 @@ namespace Dotted
             _scoreText.text = score.ToString();
         }
 
-        private void PlayAddedScoreAnimation(int addedScore,Vector3? lastCirclePosition)
+        private void PlayAddedScoreAnimation(int addedScore,Vector3? lastCirclePosition, float multipliers)
         {
             if (lastCirclePosition == null)
                 return;
 
-            _scoreDynamicText.text = "+"+addedScore.ToString();
-            _scoreDynamicText.GetComponent<Animation>().Play();
-            _scoreDynamicText.transform.position = Camera.main.WorldToScreenPoint((Vector3)lastCirclePosition) + _dynamicScoreOffset;
+            if(multipliers > 1)
+            {
+                CreateDynamicScoreText((addedScore / multipliers).ToString(), (Vector3)lastCirclePosition,true);
+                StartCoroutine(CreateDynamicScoreTextDelay("x"+(multipliers).ToString(), (Vector3)lastCirclePosition, true, 0.5f));
+                StartCoroutine(CreateDynamicScoreTextDelay("+"+(addedScore).ToString(), (Vector3)lastCirclePosition,false, 1f));
+            }
+            else
+            {
+                CreateDynamicScoreText("+"+(addedScore).ToString(), (Vector3)lastCirclePosition);
+            }
+
         }
+
+        private IEnumerator CreateDynamicScoreTextDelay(string text, Vector3 position,bool playQuickFadeAnimation = false, float delay=0)
+        {
+            yield return new WaitForSeconds(delay);
+
+            CreateDynamicScoreText(text,position, playQuickFadeAnimation);
+        }
+
+
+        private DynamicScoreText CreateDynamicScoreText(string text,Vector3 position,bool playQuickFadeAnimation = false)
+        {
+            DynamicScoreText textMeshPro = _dynamicTextPool.Pop();
+            textMeshPro.transform.SetParent(transform);
+            textMeshPro.SetText(text);
+            textMeshPro.transform.position = Camera.main.WorldToScreenPoint((Vector3)position) + _dynamicScoreOffset;
+
+            if (playQuickFadeAnimation)
+                textMeshPro.PlayQuickFadeAnimation();
+            else
+                textMeshPro.PlaySlowFadeAnimation();
+
+            return textMeshPro;
+
+        }
+
 
     }
 }

@@ -29,7 +29,7 @@ namespace Dotted
 
         public void OnCircleSelected(Circle circle);
 
-        public void OnScoreChanged(int score,Vector3? lastCirclePosition);
+        public void OnScoreChanged(int score,Vector3? lastCirclePosition,float multipliers = 1);
 
         public void OnCircleMoveSpeedChanged(float newSpeed);
 

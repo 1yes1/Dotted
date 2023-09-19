@@ -11,6 +11,9 @@ namespace Dotted
 
         [SerializeField] private Color _moveColor;
 
+        [SerializeField] private Vector3 _moveScale;
+
+
         private Controller _controller;
 
         private Queue<Transform> _targetCircleTransforms;
@@ -96,7 +99,8 @@ namespace Dotted
                     transform.position = _targetTransform.position;
             }
 
-            if (_canGoTarget && GameManager.Instance.IsGamePlaying)
+            //Düzeltilecek !GameManager.Instance.IsGameFailed burasý
+            if (_canGoTarget && GameManager.Instance.IsGamePlaying && !GameManager.Instance.IsGameFailed)
             {
                 transform.position = Vector3.Lerp(_startPosition, _targetTransform.position, _timer / _moveTime);
                 _timer += Time.fixedDeltaTime;
@@ -159,7 +163,7 @@ namespace Dotted
 
             _startPosition = transform.position;
             _targetTransform = GetTarget();
-            transform.localScale = Vector3.one * 0.25f;
+            transform.localScale = _moveScale;
             SetColor(_moveColor);
             _timer = 0;
 
@@ -236,6 +240,9 @@ namespace Dotted
 
         private void OnGameRestarted()
         {
+            _targetTransform = null;
+            StopAnimation();
+            StopMoving();
             Hide();
         }
 

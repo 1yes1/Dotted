@@ -21,7 +21,7 @@ namespace Dotted
 
         public static event Action<Circle> OnCircleSelectedEvent;
 
-        public static event Action<int, Vector3?> OnScoreChangedEvent;
+        public static event Action<int, Vector3?,float> OnScoreChangedEvent;
 
         public static event Action<float> OnCircleMoveSpeedChangedEvent;
 
@@ -59,9 +59,9 @@ namespace Dotted
             OnFailedEvent?.Invoke();
         }
 
-        public void OnScoreChanged(int score, Vector3? lastCirclePosition = null)
+        public void OnScoreChanged(int score, Vector3? lastCirclePosition = null, float multipliers = 0)
         {
-            OnScoreChangedEvent?.Invoke(score, lastCirclePosition);
+            OnScoreChangedEvent?.Invoke(score, lastCirclePosition, multipliers);
         }
         public void OnCircleMoveSpeedChanged(float newSpeed)
         {

@@ -122,7 +122,7 @@ namespace Dotted
             _isGamePlaying = true;
         }
 
-        private void OnScoreChanged(int score, Vector3? lastCirclePosition)
+        private void OnScoreChanged(int score, Vector3? lastCirclePosition,float multipliers)
         {
             CheckCircleMoveSpeed();
             CheckMaxCircleCount();

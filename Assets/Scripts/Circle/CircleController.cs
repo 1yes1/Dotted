@@ -76,7 +76,7 @@ namespace Dotted
         {
             _circlePool = PoolManager.CreateObjectPool<Circle>(_circlePrefab);
             _multiplierCirclePool = PoolManager.CreateObjectPool<MultiplierCircle>(_multiplierCirclePrefab);
-            _circlePool.CreateObjects(20);
+            _circlePool.CreateObjects(GameManager.DefaultGameProperties.MaxCircleCount);
 
             _maxCircleCount = GameManager.DefaultGameProperties.MaxCircleCount;
             _maxTravelTime = GameManager.DefaultGameProperties.MaxTravelTime;

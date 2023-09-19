@@ -39,7 +39,7 @@ namespace Dotted
             }
             int addScore = CalculateScore(circleCount, multipliers);
             _score += addScore;
-            GameEventCaller.Instance.OnScoreChanged(_score, obj[obj.Count-1].transform.position);
+            GameEventCaller.Instance.OnScoreChanged(_score, obj[obj.Count-1].transform.position,multipliers);
 
             //print("Add Score: " + addScore);
         }
