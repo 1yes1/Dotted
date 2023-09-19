@@ -10,15 +10,39 @@ namespace Dotted
     public class GameEventReceiver : IGameEvents
     {
         public static event Action<List<Dot>> OnChainCompletedEvent;
+
+        public static event Action<List<Dot>> BeforeOnChainCompletedEvent;
+
         public static event Action OnFailedEvent;
+
         public static event Action<Vector3> OnFailedIntersectionEvent;
+
         public static event Action<int> OnFailedScoreEvent;
+
         public static event Action<Circle> OnCircleSelectedEvent;
-        public static event Action<int> OnScoreChangedEvent;
+
+        public static event Action<int, Vector3?> OnScoreChangedEvent;
+
         public static event Action<float> OnCircleMoveSpeedChangedEvent;
+
         public static event Action<int> OnMaxCircleCountChangedEvent;
+
         public static event Action<float> OnMaxTravelTimeChangedEvent;
+
+        public static event Action<float> OnCircleCreatingFrequencyChangedEvent;
+
         public static event Action OnPlayAnimationFinishedEvent;
+
+        public static event Action OnGameStartedEvent;
+
+        public static event Action OnGameRestartedEvent;
+
+        public static event Action OnGamePausedEvent;
+
+        public static event Action OnGameResumedEvent;
+
+        public static event Action<int> OnHighestScoreEvent;
+
 
         public void OnChainCompleted(List<Dot> circles)
         {
@@ -35,9 +59,9 @@ namespace Dotted
             OnFailedEvent?.Invoke();
         }
 
-        public void OnScoreChanged(int score)
+        public void OnScoreChanged(int score, Vector3? lastCirclePosition = null)
         {
-            OnScoreChangedEvent?.Invoke(score);
+            OnScoreChangedEvent?.Invoke(score, lastCirclePosition);
         }
         public void OnCircleMoveSpeedChanged(float newSpeed)
         {
@@ -67,6 +91,41 @@ namespace Dotted
         public void OnFailed(int score)
         {
             OnFailedScoreEvent?.Invoke(score);
+        }
+
+        public void OnGameStarted()
+        {
+            OnGameStartedEvent?.Invoke();
+        }
+
+        public void OnGameRestarted()
+        {
+            OnGameRestartedEvent?.Invoke();
+        }
+
+        public void OnGamePaused()
+        {
+            OnGamePausedEvent?.Invoke();
+        }
+
+        public void OnGameResumed()
+        {
+            OnGameResumedEvent?.Invoke();
+        }
+
+        public void OnCircleCreatingFrequencyChanged(float circleCreatingFrequency)
+        {
+            OnCircleCreatingFrequencyChangedEvent?.Invoke(circleCreatingFrequency);
+        }
+
+        public void OnHighestScore(int highestScore)
+        {
+            OnHighestScoreEvent?.Invoke(highestScore);
+        }
+
+        public void BeforeOnChainCompleted(List<Dot> circles)
+        {
+            BeforeOnChainCompletedEvent?.Invoke(circles);
         }
     }
 }

@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Dotted;
+using Dotted.Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -13,6 +16,7 @@ public class ParticleManager : MonoBehaviour
 
     public ParticleSystem circleShatter;
 
+    private ObjectPool<ParticleSystem> _circleShatterPool;
 
     public static ParticleManager Instance => _instance;
 
@@ -23,6 +27,11 @@ public class ParticleManager : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+        _circleShatterPool = PoolManager.CreateObjectPool<ParticleSystem>(circleShatter);
+        _circleShatterPool.CreateObjects(20);
+    }
 
     //Zaten sahnede olanı oynatıyoruz
     public void Play(ParticleSystem particle, bool loop)
@@ -75,11 +84,15 @@ public class ParticleManager : MonoBehaviour
         //Eğer particle atanmışsa
         if(particle != null)
         {
-            ParticleSystem newParticle;
-            if(parent == null) newParticle = Instantiate(particle);
-            else newParticle = Instantiate(particle, parent);
+            ParticleSystem newParticle = _circleShatterPool.Pop();
+            newParticle.AddComponent<ParticleStatus>();
+            newParticle.GetComponent<ParticleStatus>().OnDisableEvent += PushParticle;
+
+            if (parent != null)
+                newParticle.transform.SetParent(parent);
 
             newParticle.gameObject.SetActive(true);
+            
 
             ParticleSystem.MainModule main = newParticle.main;
             main.loop = loop;
@@ -91,21 +104,23 @@ public class ParticleManager : MonoBehaviour
                 newParticle.gameObject.transform.position = position;
 
             newParticle.Play();
+
             returnPart = newParticle;
         }
         return returnPart;
     }
 
-    public GameObject CreateAndPlayRandom(List<ParticleSystem> particles, GameObject parent, Vector3 position, bool loop)
+    public GameObject CreateAndPlayRandom(List<ParticleSystem> particles, Transform parent, Vector3 position, bool loop)
     {
         int rand = UnityEngine.Random.Range(0, particles.Count);
         GameObject returnPart = null;
         //Eğer particle atanmışsa
         if (particles[rand] != null)
         {
-            ParticleSystem newParticle;
-            if (parent == null) newParticle = Instantiate(particles[rand]);
-            else newParticle = Instantiate(particles[rand], parent.transform);
+            ParticleSystem newParticle = _circleShatterPool.Pop();
+
+            if (parent != null)
+                newParticle.transform.SetParent(parent);
 
             newParticle.gameObject.SetActive(true);
 
@@ -145,7 +160,11 @@ public class ParticleManager : MonoBehaviour
         }
     }
 
-
+    private void PushParticle(ParticleSystem particleSystem)
+    {
+        _circleShatterPool.Push(particleSystem);
+        particleSystem.GetComponent<ParticleStatus>().OnDisableEvent -= PushParticle;
+    }
 
 }
 

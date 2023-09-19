@@ -22,21 +22,15 @@ namespace Dotted
         private void OnEnable()
         {
             GameEventReceiver.OnFailedScoreEvent += OnFailed;
+            GameEventReceiver.OnGameRestartedEvent += OnGameRestarted;
         }
 
         private void OnDisable()
         {
             GameEventReceiver.OnFailedScoreEvent -= OnFailed;
+            GameEventReceiver.OnGameRestartedEvent -= OnGameRestarted;
         }
 
-        private void OnFailed(int score)
-        {
-            FailedMenuView failedMenuView = GetView<FailedMenuView>();
-            failedMenuView.SetScore(score);
-            failedMenuView.Show();
-            GetView<PauseMenuView>().Hide();
-            GetView<ScoreMenuView>().Hide();
-        }
 
         private void Awake()
         {
@@ -122,6 +116,25 @@ namespace Dotted
             {
                 Show(_instance._history.Pop(), false);
             }
+        }
+
+
+        private void OnFailed(int score)
+        {
+            PauseMenuView pauseMenuView = GetView<PauseMenuView>();
+            pauseMenuView.HidePauseMenu();
+            pauseMenuView.Hide();
+            GetView<ScoreMenuView>().Hide();
+
+            FailedMenuView failedMenuView = GetView<FailedMenuView>();
+            failedMenuView.SetScore(score);
+            failedMenuView.Show();
+        }
+
+        private void OnGameRestarted()
+        {
+            GetView<PauseMenuView>().Show();
+            GetView<ScoreMenuView>().Show();
         }
 
     }

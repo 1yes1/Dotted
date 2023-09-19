@@ -14,14 +14,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startCircleCount: 20
   _maxCircleCount: 20
-  _maxCircleMultiplier: 0.25
+  _maxCircleMultiplier: 0.1
   _circleCreatingFrequencyAtStart: 0.015
-  _circleCreatingFrequency: 0.5
+  _circleCreatingFrequency: 0.3
+  _circleCreatingFrequencyMultiplier: 0.01
   _moveSpeed: 0.15
   _maxTravelTime: 12
-  _maxTravelTimeMultiplier: 0.025
+  _maxTravelTimeMultiplier: 0.005
   _waitTime: 0.2
   _addMultiplierScore: 1000
   _moveSpeedMultiplier: 0.005
   _startScore: 3
   _scoreMultiplier: 1.5
+  _rareMultipliers:
+  - multiplier: 2
+    minScore: 1000
+    percentage: 8
+  - multiplier: 3
+    minScore: 5000
+    percentage: 4
+  - multiplier: 4
+    minScore: 20000
+    percentage: 2
+  - multiplier: 5
+    minScore: 50000
+    percentage: 1
+  - multiplier: 6
+    minScore: 100000
+    percentage: 0.5
+  - multiplier: 6
+    minScore: 250000
+    percentage: 0.15
+  _limMaxMoveSpeed: 0.7
+  _limMaxCircleCount: 60
+  _limMinTravelTime: 5
+  _limMinCircleCreatingFrequency: 0.05

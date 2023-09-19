@@ -39,9 +39,9 @@ namespace Dotted
             _gameEventReceiver.OnCircleSelected(circle);
         }
 
-        public void OnScoreChanged(int score)
+        public void OnScoreChanged(int score, Vector3? lastCirclePosition = null)
         {
-            _gameEventReceiver.OnScoreChanged(score);
+            _gameEventReceiver.OnScoreChanged(score, lastCirclePosition);
         }
 
         public void OnCircleMoveSpeedChanged(float newSpeed)
@@ -72,6 +72,41 @@ namespace Dotted
         public void OnFailed(int score)
         {
             _gameEventReceiver.OnFailed(score);
+        }
+
+        public void OnGameStarted()
+        {
+            _gameEventReceiver.OnGameStarted();
+        }
+
+        public void OnGameRestarted()
+        {
+            _gameEventReceiver.OnGameRestarted();
+        }
+
+        public void OnGamePaused()
+        {
+            _gameEventReceiver.OnGamePaused();
+        }
+
+        public void OnGameResumed()
+        {
+            _gameEventReceiver.OnGameResumed();
+        }
+
+        public void OnCircleCreatingFrequencyChanged(float circleCreatingFrequency)
+        {
+            _gameEventReceiver.OnCircleCreatingFrequencyChanged(circleCreatingFrequency);
+        }
+
+        public void OnHighestScore(int highestScore)
+        {
+            _gameEventReceiver.OnHighestScore(highestScore);
+        }
+
+        public void BeforeOnChainCompleted(List<Dot> circles)
+        {
+            _gameEventReceiver.BeforeOnChainCompleted(circles);
         }
     }
 }

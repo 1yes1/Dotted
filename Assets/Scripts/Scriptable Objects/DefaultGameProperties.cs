@@ -27,6 +27,9 @@ namespace Dotted
         [SerializeField]
         private float _circleCreatingFrequency = 0.25f;
 
+        [SerializeField]
+        private float _circleCreatingFrequencyMultiplier = 0.02f;
+
 
         [Header("Circle Movement")]
 
@@ -58,10 +61,29 @@ namespace Dotted
         private float _scoreMultiplier = 1.8f;
 
 
+        [Header("Circle Score Multipliers")]
+        [SerializeField] private List<RareMultiplier> _rareMultipliers;
+
+
+        [Header("Const Limits")]
+        [SerializeField]
+        private float _limMaxMoveSpeed = 0.7f;
+
+        [SerializeField]
+        private int _limMaxCircleCount = 75;
+
+        [SerializeField]
+        private float _limMinTravelTime = 3.5f;
+
+        [SerializeField]
+        private float _limMinCircleCreatingFrequency = 0.02f;
+
+
         public int StartCircleCount => _startCircleCount;
         public int MaxCircleCount => _maxCircleCount;
         public float CircleCreatingFrequencyAtStart => _circleCreatingFrequencyAtStart;
         public float CircleCreatingFrequency => _circleCreatingFrequency;
+        public float CircleCreatingFrequencyMultiplier => _circleCreatingFrequencyMultiplier;
         public float MoveSpeed => _moveSpeed;
         public float WaitTime => Random.Range(_waitTime, _waitTime + _waitTime * 0.2f);
         public int StartScore => _startScore;
@@ -71,7 +93,11 @@ namespace Dotted
         public float MaxTravelTime => _maxTravelTime;
         public float MaxTravelTimeMultiplier => _maxTravelTimeMultiplier;
         public float MaxCircleMultiplier => _maxCircleMultiplier;
-
+        public float LimMaxMoveSpeed => _limMaxMoveSpeed;
+        public int LimMaxCircleCount => _limMaxCircleCount;
+        public float LimMinTravelTime => _limMinTravelTime;
+        public float LimMinCircleCreatingFrequency => _limMinCircleCreatingFrequency;
+        public  List<RareMultiplier> RareMultipliers => _rareMultipliers;
 
     }
 }
